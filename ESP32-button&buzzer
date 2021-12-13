@@ -1,0 +1,59 @@
+int freq = 2000;
+int channel = 0;
+int resolution = 8;
+
+
+// constants won't change. They're used here to set pin numbers:
+const int buttonPin = 26;     // the number of the pushbutton pin (on/off metal rugged switch) 
+// variables will change:
+int buttonState = 0;         // variable for reading the pushbutton status
+
+
+
+
+void setup() {
+  
+  Serial.begin(115200);
+  ledcSetup(channel, freq, resolution);
+  ledcAttachPin(32, channel); // attach pin 32 to piezo buzzer. 
+
+ // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
+
+//Set pin 27 as output (we will use it as a 3.3V source for the metal switch button) 
+  pinMode(27,OUTPUT); 
+}
+  
+void loop() {
+
+  digitalWrite(27,HIGH);
+  delay(1000);
+  
+  ledcWrite(channel, 125); //2^8 / 2 = resolution / 2 = wave is half the time high, half low 
+
+ // ledcWriteTone(channel, 2000); //default the frequency to 2000
+
+ // read the state of the pushbutton value:
+   buttonState = digitalRead(buttonPin);
+  
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == LOW) //HIGH
+    {
+     ledcWriteTone(channel, 2000); //default the frequency to 2000 //no buzzer noise
+     } //del
+     else { //del
+        
+       ledcWriteTone(channel, 1000); //default the frequency to 2000
+
+        // read the state of the pushbutton value:
+        buttonState = digitalRead(buttonPin);
+      }
+       
+ // delay(1000);
+ // ledcWriteTone(channel, 1000); // change to lower pitch note 
+ // delay(1000);
+ // ledcWriteTone(channel, 1300);
+ // delay(1000);
+  
+  
+}
