@@ -1,0 +1,112 @@
+//Fab Academy 2020 - Fab Lab León
+//Servo without library                         
+//ESP32
+
+
+int servo = 5;
+
+int angle;
+int pwm;
+
+
+// define passive buzzer pin as ESP pin GPIO 32. 
+const int buzzer = 32;
+
+// constants won't change. They're used here to set pin numbers:
+
+//define the pushbutton pin (metal rugged on/off switch) 
+const int buttonPin = 26;     // the number of the metal rugged pushbutton pin (GPIO 39) 
+// variables will change:
+int buttonState = 0;         // variable for reading the pushbutton status
+
+
+
+int freq = 2000;
+int channel = 0;
+int resolution = 8;
+
+
+void setup()
+{
+ pinMode(servo, OUTPUT);
+ Serial.begin(9600); 
+
+  //initialize pushbutton pin as an input: 
+  pinMode(buttonPin, INPUT);
+
+
+  ledcSetup(channel, freq, resolution);
+  ledcAttachPin(32, channel); // attach pin 32 to piezo buzzer. 
+
+ // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
+
+//Set pin 27 as output (we will use it as a 3.3V source for the metal switch button) 
+  pinMode(27,OUTPUT); 
+ 
+}
+//int angle=90;
+int timer=1500;
+//timer=map(angle, 0,180,1000,2000); 
+
+
+
+  
+void loop() {
+
+  digitalWrite(27,HIGH);
+  delay(1000);
+  
+  ledcWrite(channel, 125); //2^8 / 2 = resolution / 2 = wave is half the time high, half low 
+
+ // ledcWriteTone(channel, 2000); //default the frequency to 2000
+
+ // read the state of the pushbutton value:
+   buttonState = digitalRead(buttonPin);
+  
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == LOW) //HIGH
+    {
+     ledcWriteTone(channel, 2000); //default the frequency to 2000 
+   
+       //if the metal on/off button is pressed, then turn the motor a certain direction. 
+       for (angle = 0; angle <= 240; angle += 1)  { // for (angle = 0; angle <= 140; angle += 5)  {
+    //   servoPulse(servo, angle);  }
+    timer=map(angle, 0,180,1000,2000);
+      digitalWrite(5,HIGH);
+      delayMicroseconds(timer); //180 degrees is 2000, 0 degrees is 1,000
+      digitalWrite(5,LOW);
+      delayMicroseconds(20000-timer); 
+    //20ms wave 
+       }
+
+   
+     } //del
+     else { //del
+        
+       ledcWriteTone(channel, 1000); //default the frequency to 2000
+              
+      //if the metal on/off switch button is un-pressed then turn the motor the other direction  
+      for (angle = 240; angle >= 0; angle -= 1)  { // for (angle = 0; angle <= 140; angle += 5)  {
+      //   servoPulse(servo, angle);  }
+      timer=map(angle, 0,180,1000,2000);
+        digitalWrite(5,HIGH);
+        delayMicroseconds(timer); //180 degrees is 2000, 0 degrees is 1,000
+        digitalWrite(5,LOW);
+        delayMicroseconds(20000-timer); 
+      //20ms wave 
+         }
+
+       
+        // read the state of the pushbutton value:
+        buttonState = digitalRead(buttonPin);
+      }
+       
+ // delay(1000);
+ // ledcWriteTone(channel, 1000); // change to lower pitch note 
+ // delay(1000);
+ // ledcWriteTone(channel, 1300);
+ // delay(1000);
+  
+  
+}
