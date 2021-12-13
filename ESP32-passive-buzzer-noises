@@ -1,0 +1,35 @@
+int freq = 2000;
+int channel = 0;
+int resolution = 8;
+  
+void setup() {
+  
+  Serial.begin(115200);
+  ledcSetup(channel, freq, resolution);
+  ledcAttachPin(32, channel); // attach pin 32 to piezo buzzer. 
+  
+}
+  
+void loop() {
+  
+  ledcWriteTone(channel, 2000); //default the frequency to 2000
+  
+  
+  
+  ledcWrite(channel, 125); //2^8 / 2 = resolution / 2 = wave is half the time high, half low 
+
+  delay(1000);
+  ledcWriteTone(channel, 1000); // change to lower pitch note 
+  delay(1000);
+  ledcWriteTone(channel, 1300);
+  delay(1000);
+  
+//  for (int freq = 255; freq < 10000; freq = freq + 250){
+//  
+//     Serial.println(freq);
+//  
+//     ledcWriteTone(channel, freq);
+//     delay(1000);
+//  }
+  
+}
